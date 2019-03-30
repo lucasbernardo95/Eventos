@@ -71,8 +71,10 @@ public class EventoBean implements Serializable {
 
 		} catch (RuntimeException e) {
 			MessageUtil.errorMessage("Erro ao tentar salvar.");
+		} finally {
+			list = repository.findAll();
 		}
-		list = repository.findAll();
+		
 		return false;
 	}
 	

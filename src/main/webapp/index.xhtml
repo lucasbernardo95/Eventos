@@ -9,42 +9,45 @@
 
 </h:head>
 <body>
-	<h:form id="formSalvar">
-		<p:panelGrid columns="3">
-			<f:facet name="header">
-				<p:row>
-					<p:commandButton value="Salvar" action="#{eventoBean.novo}"
-						update="formPublicar :formSalvar">
-					</p:commandButton>
 
-
-				</p:row>
-			</f:facet>
-			<p:outputLabel value="Nome" />
-			<p:inputTextarea value="#{eventoBean.entity.nome}" rows="1"
-				counter="dispNomeNew" maxlength="30" cols="30"
-				counterTemplate="{0} caracteres restantes." autoResize="true" />
-			<p:outputLabel id="dispNomeNew" />
-
-
-			<p:outputLabel value="Local" for="dispLocalNew" />
-			<p:inputTextarea value="#{eventoBean.entity.local}" rows="1"
-				cols="30" counter="dispLocalNew" maxlength="150"
-				counterTemplate="{0} caracteres restantes." autoResize="true" />
-			<p:outputLabel id="dispLocalNew" />
-
-			<h:outputText value="Horário" />
-			<p:inputMask value="#{eventoBean.entity.horario}" mask="99:99" />
-			<h:outputText value="" />
-
-			<h:outputText value="Data" />
-			<p:inputMask value="#{eventoBean.entity.data}" mask="99/99/9999" />
-			<h:outputText value="" />
-
-		</p:panelGrid>
-
-	</h:form>
 	<h:form id="formPublicar">
+
+		<p:dialog header="Cadastrar" widgetVar="diagCadastrar" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:panelGrid columns="3">
+				<f:facet name="header">
+					<p:row>
+						<p:commandButton value="Salvar" action="#{eventoBean.novo}"
+							update="formPublicar">
+						</p:commandButton>
+
+
+					</p:row>
+				</f:facet>
+				<p:outputLabel value="Nome" />
+				<p:inputTextarea value="#{eventoBean.entity.nome}" rows="1"
+					counter="dispNomeNew" maxlength="30" cols="30"
+					counterTemplate="{0} caracteres restantes." autoResize="true" />
+				<p:outputLabel id="dispNomeNew" />
+
+
+				<p:outputLabel value="Local" for="dispLocalNew" />
+				<p:inputTextarea value="#{eventoBean.entity.local}" rows="1"
+					cols="30" counter="dispLocalNew" maxlength="150"
+					counterTemplate="{0} caracteres restantes." autoResize="true" />
+				<p:outputLabel id="dispLocalNew" />
+
+				<h:outputText value="Horário" />
+				<p:inputMask value="#{eventoBean.entity.horario}" mask="99:99" />
+				<h:outputText value="" />
+
+				<h:outputText value="Data" />
+				<p:inputMask value="#{eventoBean.entity.data}" mask="99/99/9999" />
+				<h:outputText value="" />
+
+			</p:panelGrid>
+		</p:dialog>
+
 		<p:growl id="message" showDetail="true" />
 
 		<!-- Dialog for update event -->
@@ -54,7 +57,7 @@
 				<f:facet name="header">
 					<p:row>
 						<p:commandButton value="Salvar" action="#{eventoBean.alterar}"
-							update="formPublicar :formSalvar">
+							update="formPublicar">
 						</p:commandButton>
 
 					</p:row>
@@ -98,18 +101,22 @@
 			<p:ajax event="rowUnselect" listener="#{eventoBean.onRowUnselect}"
 				update="formPublicar" />
 
-			<p:column headerText="Nome">
+			<p:column headerText="Nome" filterBy="#{object.nome}" filterMatchMode="contains">
 				<h:outputText value="#{object.nome}" />
 			</p:column>
-			<p:column headerText="local">
+			<p:column headerText="local" filterBy="#{object.local}" filterMatchMode="contains">
 				<h:outputText value="#{object.local}" />
 			</p:column>
-			<p:column headerText="Data">
+			<p:column headerText="Data" filterBy="#{object.data}" filterMatchMode="contains">
 				<h:outputText value="#{object.data}" />
 			</p:column>
 
 			<f:facet name="footer">
-				<p:commandButton process="@this" update="formPublicar :formSalvar"
+				<p:commandButton process="@this" update="formPublicar"
+					value="Cadastrar" oncomplete="PF('diagCadastrar').show();" />
+			</f:facet>
+			<f:facet name="footer">
+				<p:commandButton process="@this" update="formPublicar"
 					value="Alterar" oncomplete="PF('diagAlterar').show();"
 					disabled="#{empty eventoBean.selected.nome}" />
 			</f:facet>
