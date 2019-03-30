@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+
+</h:head>
+<body>
+	<h:form id="formSalvar">
+		<p:panelGrid columns="3">
+			<f:facet name="header">
+				<p:row>
+					<p:commandButton value="Salvar" action="#{eventoBean.novo}"
+						update="formPublicar :formSalvar">
+					</p:commandButton>
+
+
+				</p:row>
+			</f:facet>
+			<p:outputLabel value="Nome" />
+			<p:inputTextarea value="#{eventoBean.entity.nome}" rows="1"
+				counter="dispNomeNew" maxlength="30" cols="30"
+				counterTemplate="{0} caracteres restantes." autoResize="true" />
+			<p:outputLabel id="dispNomeNew" />
+
+
+			<p:outputLabel value="Local" for="dispLocalNew" />
+			<p:inputTextarea value="#{eventoBean.entity.local}" rows="1"
+				cols="30" counter="dispLocalNew" maxlength="150"
+				counterTemplate="{0} caracteres restantes." autoResize="true" />
+			<p:outputLabel id="dispLocalNew" />
+
+			<h:outputText value="Horário" />
+			<p:inputMask value="#{eventoBean.entity.horario}" mask="99:99" />
+			<h:outputText value="" />
+
+			<h:outputText value="Data" />
+			<p:inputMask value="#{eventoBean.entity.data}" mask="99/99/9999" />
+			<h:outputText value="" />
+
+		</p:panelGrid>
+
+	</h:form>
+	<h:form id="formPublicar">
+		<p:growl id="message" showDetail="true" />
+
+		<!-- Dialog for update event -->
+		<p:dialog header="Atualizar" widgetVar="diagAlterar" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:panelGrid columns="3">
+				<f:facet name="header">
+					<p:row>
+						<p:commandButton value="Salvar" action="#{eventoBean.alterar}"
+							update="formPublicar :formSalvar">
+						</p:commandButton>
+
+					</p:row>
+				</f:facet>
+				<p:outputLabel value="Nome" />
+				<p:inputTextarea value="#{eventoBean.selected.nome}" rows="1"
+					counter="dispNomeEdit" maxlength="30" cols="30"
+					counterTemplate="{0} caracteres restantes." autoResize="true" />
+				<p:outputLabel id="dispNomeEdit" />
+
+
+				<p:outputLabel value="Local" for="dispLocalEdit" />
+				<p:inputTextarea value="#{eventoBean.selected.local}" rows="1"
+					cols="30" counter="dispLocalEdit" maxlength="150"
+					counterTemplate="{0} caracteres restantes." autoResize="true" />
+				<p:outputLabel id="dispLocalEdit" />
+
+				<h:outputText value="Horário" />
+				<p:inputMask value="#{eventoBean.selected.horario}" mask="99:99" />
+				<h:outputText value="" />
+
+				<h:outputText value="Data" />
+				<p:inputMask value="#{eventoBean.selected.data}" mask="99/99/9999" />
+				<h:outputText value="" />
+
+			</p:panelGrid>
+		</p:dialog>
+
+
+		<!-- Table for show events -->
+		<p:dataTable id="table" var="object" value="#{eventoBean.list}"
+			selectionMode="single" selection="#{eventoBean.selected}"
+			rowKey="#{object.id}" paginator="true" rows="6"
+			paginatorPosition="top">
+
+			<f:facet name="header">
+				Gerenciamento
+        	</f:facet>
+			<p:ajax event="rowSelect" listener="#{eventoBean.onRowSelect}"
+				update="formPublicar" />
+			<p:ajax event="rowUnselect" listener="#{eventoBean.onRowUnselect}"
+				update="formPublicar" />
+
+			<p:column headerText="Nome">
+				<h:outputText value="#{object.nome}" />
+			</p:column>
+			<p:column headerText="local">
+				<h:outputText value="#{object.local}" />
+			</p:column>
+			<p:column headerText="Data">
+				<h:outputText value="#{object.data}" />
+			</p:column>
+
+			<f:facet name="footer">
+				<p:commandButton process="@this" update="formPublicar :formSalvar"
+					value="Alterar" oncomplete="PF('diagAlterar').show();"
+					disabled="#{empty eventoBean.selected.nome}" />
+			</f:facet>
+			<f:facet name="footer">
+				<p:commandButton process="@this" update="formPublicar"
+					value="Detalhes" oncomplete="PF('diagDetalhe').show();"
+					disabled="#{empty eventoBean.selected.nome}" />
+			</f:facet>
+			<f:facet name="footer">
+				<p:commandButton process="@this" update="formPublicar"
+					disabled="#{empty eventoBean.selected.nome}" value="Deletar"
+					action="#{eventoBean.delete}">
+					<p:confirm header="Deletar" message="Deseja confirmar?" />
+				</p:commandButton>
+			</f:facet>
+		</p:dataTable>
+
+
+		<!-- Dialog for detail -->
+		<p:dialog header="Detalhes" widgetVar="diagDetalhe" modal="true"
+			showEffect="fade" hideEffect="fade" resizable="false">
+			<p:outputPanel id="detalheNews" style="text-align:center;">
+				<p:panelGrid columns="2" columnClasses="label,value">
+					<f:facet name="header">
+						<h:outputText value="#{eventoBean.selected.nome}" />
+					</f:facet>
+					<h:outputText value="Local" />
+					<h:outputText value="#{eventoBean.selected.local}" />
+
+					<h:outputText value="Horário" />
+					<h:outputText value="#{eventoBean.selected.horario}" />
+
+					<h:outputText value="Data" />
+					<h:outputText value="#{eventoBean.selected.data}" />
+
+				</p:panelGrid>
+			</p:outputPanel>
+		</p:dialog>
+
+		<!-- Botão de confirmação para deletar -->
+		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+			<p:commandButton value="Sim" type="button"
+				styleClass="ui-confirmdialog-yes" />
+			<p:commandButton value="Não" type="button"
+				styleClass="ui-confirmdialog-no" />
+		</p:confirmDialog>
+	</h:form>
+</body>
+</html>
