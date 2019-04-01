@@ -17,6 +17,6 @@ public interface EventoRepository extends JpaRepository<Evento, Long>  {
 	@Query(" from Evento where data = :data")
 	public List<Evento> findNewsByData(@Param("data") Date data);
 	
-	@Query(" from Evento where id = :id")
+	@Query(" from Evento where id_evento = :id")
 	public Evento findEventById(@Param("id") Integer id);
 }
