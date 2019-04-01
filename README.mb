@@ -1,4 +1,4 @@
-## Eventos Backend
+##	Eventos Backend
 
 ## Itens implementados:
 
@@ -10,7 +10,7 @@
 ### G. Utilizar testes de unidades 
 
 ### Deployment of a simple crud for events and a REST service. Backend developed with:
-* Spring Boot
-* Hibernate
-* PostgreSQL
-* JSF and PrimeFaces.
+#### Spring Boot
+#### Hibernate
+#### PostgreSQL
+#### JSF and PrimeFaces.
