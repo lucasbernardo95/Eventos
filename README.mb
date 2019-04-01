@@ -1,5 +1,14 @@
 ## Eventos Backend
 
+## Itens implementados:
+
+### A. Fazer uma aplicação utilizando JSF
+### B. Utilizar persistência em um banco de dados (qualquer banco desejado) - (postgres)
+### C. Utilizar Hibernate e JPA
+### D. Utilizar Spring Framework Boot 2.0
+### F. Utilizar Primefaces
+### G. Utilizar testes de unidades 
+
 ### Deployment of a simple crud for events and a REST service. Backend developed with:
 * Spring Boot
 * Hibernate

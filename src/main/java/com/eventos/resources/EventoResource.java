@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,14 +39,21 @@ public class EventoResource {
 
 	// Se o JSON não tiver o atributo id é cadastro, caso contrário é alteração
 	@PostMapping(produces = "application/json")
-	public Evento addEvent(@RequestBody @Valid Evento evento) {
+	public Evento addOrUpdateEvent(@RequestBody @Valid Evento evento) {
 		return er.save(evento);
 	}
 	
-	@PostMapping(path = "/addText")
+	@DeleteMapping()
+	public Evento deleteEvent(@RequestBody Evento evento) {
+		er.delete(evento);
+		return evento;
+	}
+	
+	//receive format text
+	@PostMapping(path = "/addOrUpdateText")
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Response<Evento>> addText(@RequestBody String evento) {
-		System.out.println(evento + "recebido");
+	public ResponseEntity<Response<Evento>> addOrUpdateText(@RequestBody String evento) {
+
 		Response<Evento> response = new Response<>();
 		
 		if(evento.equals("")) {
@@ -54,12 +62,32 @@ public class EventoResource {
 		}
 		
 		JsonObject jsonObject = new JsonParser().parse(evento).getAsJsonObject();
-		String nome = jsonObject.get("nome").toString();
-		String local = jsonObject.get("local").toString();
-		String horario = jsonObject.get("horario").toString();
-		String data = jsonObject.get("data").toString();
-		
-		if (!isValid(nome) && !isValid(local) && !isValid(horario) && !isValid(data)) {
+		Integer id = Integer.parseInt(jsonObject.get("id").toString());
+		String nome = replaceValue(jsonObject.get("nome").toString());
+		String local = replaceValue(jsonObject.get("local").toString());
+		String horario = replaceValue(jsonObject.get("horario").toString());
+		String data = replaceValue(jsonObject.get("data").toString());
+		Evento ev;
+
+		if(id != 0) {
+			
+			id = Integer.parseInt(jsonObject.get("id").toString());
+			ev = er.findEventById(id);
+			
+			if(!ev.equals(null)) {
+				ev.setNome(nome);
+				ev.setLocal(local);
+				ev.setHorario(horario);
+				ev.setData(data);
+				
+				if(!er.save(ev).equals(null)) {
+					response.setData(ev);
+					return ResponseEntity.ok(response);
+				}
+			}
+		}
+
+		else if (!isValid(nome) && !isValid(local) && !isValid(horario) && !isValid(data)) {
 			Evento e = new Evento(nome, local, horario, data);
 			if(!er.save(e).equals(null)) {
 				response.setData(e);
@@ -71,50 +99,24 @@ public class EventoResource {
 		return ResponseEntity.badRequest().body(response);
 	}
 	
-	private boolean isValid(String valor) {
-		return (valor.isEmpty() || valor.trim().isEmpty());
-	}
+	@PostMapping(path = "/{id}")
+	public ResponseEntity<Response<Evento>> deleteById(@PathVariable("id") Integer id) {
 
-	@DeleteMapping()
-	public Evento deleteEvent(@RequestBody Evento evento) {
-		er.delete(evento);
-		return evento;
-	}
-	
-	@PutMapping(path = "/updateText")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Response<Evento>> updateText(@RequestBody String evento) {
-		System.out.println(evento + "recebido");
 		Response<Evento> response = new Response<>();
 		
-		if(evento.equals("")) {
-			response.getErrors().add("Event void");
+		if(id == null || id <= 0) {
+			response.getErrors().add("ID invalid");
 			return ResponseEntity.badRequest().body(response);
 		}
-		
-		JsonObject jsonObject = new JsonParser().parse(evento).getAsJsonObject();
-		Integer id = Integer.parseInt(jsonObject.get("id_evento").toString());
-		String nome = jsonObject.get("nome").toString();
-		String local = jsonObject.get("local").toString();
-		String horario = jsonObject.get("horario").toString();
-		String data = jsonObject.get("data").toString();
 		
 		Evento e;
 		if(id > 0 ) {
 			e = er.findEventById(id);
 			if(e != null) {
-			
-				if (!isValid(nome) && !isValid(local) && !isValid(horario) && !isValid(data)) {
-					e = new Evento(nome, local, horario, data);
-					if(!er.save(e).equals(null)) {
-						response.setData(e);
-						return ResponseEntity.ok(response);
-						
-					}response.getErrors().add("Error while trying to save.");
-					return ResponseEntity.badRequest().body(response);
-					
-				}response.getErrors().add("Fields invalid.");
-				return ResponseEntity.badRequest().body(response);
+				
+				er.delete(e);
+				response.setData(e);
+				return ResponseEntity.ok(response);
 				
 			}response.getErrors().add("Evento not found.");
 			return ResponseEntity.badRequest().body(response);
@@ -125,12 +127,12 @@ public class EventoResource {
 		return ResponseEntity.badRequest().body(response);
 	}
 
-//	@DeleteMapping(path = "/{id}")
-//	public ResponseEntity<Evento> deleteById(@PathVariable("id") Integer id) {
-//
-//		Evento e = er.findEventById(id);
-//		System.out.println(id + "recebido" + e.toString());
-//		return new ResponseEntity<Evento>(e, HttpStatus.OK);
-//		
-//	}
+	private boolean isValid(String valor) {
+		return (valor.isEmpty() || valor.trim().isEmpty());
+	}
+	
+	private String replaceValue(String value) {
+		return value.replace("\"", "");
+	}
+
 }
