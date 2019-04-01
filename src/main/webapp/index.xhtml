@@ -11,7 +11,11 @@
 <body onclick="#{eventoBean.listAll()}">
 
 	<h:form id="formPublicar">
-
+            <p:menubar id="menu">
+                <p:menuitem value="Home" url="#"></p:menuitem>
+                <p:menuitem value="Desafio prático" url="https://pt.surveymonkey.com/r/WQG2SRJ"></p:menuitem>
+                <p:menuitem value="GitHub" url="https://github.com/lucasbernardo95"></p:menuitem>
+            </p:menubar>
 		<p:dialog header="Cadastrar" widgetVar="diagCadastrar" modal="true"
 			showEffect="fade" hideEffect="fade" resizable="false">
 			<p:panelGrid columns="3">
