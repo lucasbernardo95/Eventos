@@ -5,7 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
 
 @Entity
 public class Evento {
@@ -21,10 +23,10 @@ public class Evento {
 	@NotNull
 	private String local;
 	
-    @Column
+	@NotNull
     private String data;
 	
-    @NotNull
+	@NotNull
 	private String horario;
 
 	public Evento(String nome, String local, String data, String horario) {

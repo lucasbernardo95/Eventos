@@ -53,7 +53,7 @@ public class EventoResource {
 	@PostMapping(path = "/addOrUpdateText")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Response<Evento>> addOrUpdateText(@RequestBody String evento) {
-
+		System.out.println("dado recebido: " + evento);
 		Response<Evento> response = new Response<>();
 		
 		if(evento.equals("")) {
@@ -79,7 +79,7 @@ public class EventoResource {
 				ev.setLocal(local);
 				ev.setHorario(horario);
 				ev.setData(data);
-				
+				System.out.println("alterando: " + ev.toString());
 				if(!er.save(ev).equals(null)) {
 					response.setData(ev);
 					return ResponseEntity.ok(response);
@@ -88,7 +88,12 @@ public class EventoResource {
 		}
 
 		else if (!isValid(nome) && !isValid(local) && !isValid(horario) && !isValid(data)) {
-			Evento e = new Evento(nome, local, horario, data);
+			Evento e = new Evento();
+			e.setNome(nome);
+			e.setLocal(local);
+			e.setHorario(horario);
+			e.setData(data);
+			System.out.println("salvando: " + e.toString());
 			if(!er.save(e).equals(null)) {
 				response.setData(e);
 				return ResponseEntity.ok(response);
