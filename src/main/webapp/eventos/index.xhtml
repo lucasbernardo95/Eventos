@@ -11,23 +11,25 @@
 <body onclick="#{eventoBean.listAll()}">
 
 	<h:form id="formPublicar">
-            <p:menubar id="menu">
-                <p:menuitem value="Home" url="#"></p:menuitem>
-                <p:menuitem value="Single page (Heroku)" url="https://fast-coast-87084.herokuapp.com/"></p:menuitem>
-                <p:menuitem value="Desafio prático" url="https://pt.surveymonkey.com/r/WQG2SRJ"></p:menuitem>
-                <p:menuitem value="GitHub" url="https://github.com/lucasbernardo95"></p:menuitem>
-            </p:menubar>
+		<p:menubar id="menu">
+			<p:menuitem value="Home" url="#"></p:menuitem>
+			<p:menuitem value="Single page (Heroku)"
+				url="https://fast-coast-87084.herokuapp.com/"></p:menuitem>
+			<p:menuitem value="Desafio prático"
+				url="https://pt.surveymonkey.com/r/WQG2SRJ"></p:menuitem>
+			<p:menuitem value="GitHub" url="https://github.com/lucasbernardo95"></p:menuitem>
+		</p:menubar>
 		<p:dialog header="Cadastrar" widgetVar="diagCadastrar" modal="true"
 			showEffect="fade" hideEffect="fade" resizable="false">
 			<p:panelGrid columns="3">
 				<f:facet name="header">
 					<p:row>
-						<p:commandButton value="Salvar" action="#{eventoBean.novo}"
-							update="formPublicar">
+						<p:commandButton value="Salvar"
+							actionListener="#{eventoBean.novo}" update="formPublicar">
 						</p:commandButton>
 					</p:row>
 				</f:facet>
-				
+
 				<p:outputLabel value="Nome" />
 				<p:inputTextarea value="#{eventoBean.entity.nome}" rows="1"
 					counter="dispNomeNew" maxlength="30" cols="30"
@@ -65,7 +67,7 @@
 						</p:commandButton>
 					</p:row>
 				</f:facet>
-				
+
 				<p:outputLabel value="Nome" />
 				<p:inputTextarea value="#{eventoBean.selected.nome}" rows="1"
 					counter="dispNomeEdit" maxlength="30" cols="30"
@@ -105,60 +107,54 @@
 			<p:ajax event="rowUnselect" listener="#{eventoBean.onRowUnselect}"
 				update="formPublicar" />
 
-			<p:column headerText="Nome" filterBy="#{object.nome}" filterMatchMode="contains">
-				<h:outputText value="#{object.nome}" />
-			</p:column>
-			<p:column headerText="local" filterBy="#{object.local}" filterMatchMode="contains">
-				<h:outputText value="#{object.local}" />
-			</p:column>
-			<p:column headerText="Data" filterBy="#{object.data}" filterMatchMode="contains">
-				<h:outputText value="#{object.data}" />
+			<p:column style="width:16px">
+				<p:rowToggler />
 			</p:column>
 
+			<p:column headerText="Nome" filterBy="#{object.nome}"
+				filterMatchMode="contains">
+				<h:outputText value="#{object.nome}" />
+			</p:column>
+
+			<p:column headerText="Data" filterBy="#{object.data}"
+				filterMatchMode="contains">
+				<h:outputText value="#{object.data}" />
+			</p:column>
+			
+			<p:rowExpansion>
+				<p:panelGrid columns="2" columnClasses="label,value">
+					<f:facet name="header">
+						<h:outputText value="#{object.nome}" />
+					</f:facet>
+					<h:outputText value="Local" />
+					<h:outputText value="#{object.local}" />
+
+					<h:outputText value="Horário" />
+					<h:outputText value="#{object.horario}" />
+
+					<h:outputText value="Data" />
+					<h:outputText value="#{object.data}" />
+
+				</p:panelGrid>
+			</p:rowExpansion>
+
 			<f:facet name="footer">
-				<p:commandButton process="@this" update="formPublicar"
-					value="Cadastrar" oncomplete="PF('diagCadastrar').show();" />
+				<p:commandButton process="@this" update="formPublicar" icon="fa fa-plus"
+					title="Cadastrar" oncomplete="PF('diagCadastrar').show();" />
 			</f:facet>
 			<f:facet name="footer">
-				<p:commandButton process="@this" update="formPublicar"
-					value="Alterar" oncomplete="PF('diagAlterar').show();"
+				<p:commandButton process="@this" update="formPublicar" icon="fa fa-edit"
+					title="Alterar" oncomplete="PF('diagAlterar').show();"
 					disabled="#{empty eventoBean.selected.nome}" />
 			</f:facet>
 			<f:facet name="footer">
 				<p:commandButton process="@this" update="formPublicar"
-					value="Detalhes" oncomplete="PF('diagDetalhe').show();"
-					disabled="#{empty eventoBean.selected.nome}" />
-			</f:facet>
-			<f:facet name="footer">
-				<p:commandButton process="@this" update="formPublicar"
-					disabled="#{empty eventoBean.selected.nome}" value="Deletar"
+					disabled="#{empty eventoBean.selected.nome}" title="Deletar" icon="fa fa-trash"
 					action="#{eventoBean.delete}">
 					<p:confirm header="Deletar" message="Deseja confirmar?" />
 				</p:commandButton>
 			</f:facet>
 		</p:dataTable>
-
-
-		<!-- Dialog for detail -->
-		<p:dialog header="Detalhes" widgetVar="diagDetalhe" modal="true"
-			showEffect="fade" hideEffect="fade" resizable="false">
-			<p:outputPanel id="detalheNews" style="text-align:center;">
-				<p:panelGrid columns="2" columnClasses="label,value">
-					<f:facet name="header">
-						<h:outputText value="#{eventoBean.selected.nome}" />
-					</f:facet>
-					<h:outputText value="Local" />
-					<h:outputText value="#{eventoBean.selected.local}" />
-
-					<h:outputText value="Horário" />
-					<h:outputText value="#{eventoBean.selected.horario}" />
-
-					<h:outputText value="Data" />
-					<h:outputText value="#{eventoBean.selected.data}" />
-
-				</p:panelGrid>
-			</p:outputPanel>
-		</p:dialog>
 
 		<!-- Botão de confirmação para deletar -->
 		<p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
@@ -167,6 +163,17 @@
 			<p:commandButton value="Não" type="button"
 				styleClass="ui-confirmdialog-no" />
 		</p:confirmDialog>
+
+		<p:dock position="bottom">
+			<p:menuitem value="Github" icon="/img/github.png"
+				url="https://github.com/lucasbernardo95/Eventos" />
+			<p:menuitem value="React" icon="/img/react.png"
+				url="https://fast-coast-87084.herokuapp.com/" />
+			<p:menuitem value="ESIG" icon="/img/esig.png"
+				url="https://esig.com.br/portalsig/" />
+				<p:menuitem value="Sair" icon="/img/logout.png"
+				url="http://localhost:8080/logout"/>
+		</p:dock>
 	</h:form>
 </body>
 </html>

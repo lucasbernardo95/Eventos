@@ -30,7 +30,7 @@ public class EventoBean implements Serializable {
 
 	public EventoBean() {
 	}
-	
+
 	@PostConstruct
 	public void init() {
 		this.selected = new Evento();
@@ -52,16 +52,15 @@ public class EventoBean implements Serializable {
 	public void alterar() {
 		if (selected.equals(null))
 			MessageUtil.warningMensage("É necessário selecionar uma notícia.");
-		else if(save(selected))
-				this.selected = new Evento();
+		else if (save(selected))
+			this.selected = new Evento();
 	}
 
 	public boolean save(Evento evento) {
 		try {
 			// Verifica se os campos não estão vazios e salva caso estejam ok.
-			if (!isCampoVazio(evento.getNome()) && !isCampoVazio(evento.getLocal()) 
-					&& !isCampoVazio(evento.getHorario()) 
-					&& !isCampoVazio(evento.getData())) {
+			if (!isCampoVazio(evento.getNome()) && !isCampoVazio(evento.getLocal())
+					&& !isCampoVazio(evento.getHorario()) && !isCampoVazio(evento.getData())) {
 
 				repository.save(evento);
 				list = repository.findAll();
@@ -71,13 +70,12 @@ public class EventoBean implements Serializable {
 
 		} catch (RuntimeException e) {
 			MessageUtil.errorMessage("Erro ao tentar salvar.");
-		} finally {
-			list = repository.findAll();
 		}
-		
+		list = repository.findAll();
+
 		return false;
 	}
-	
+
 	public void listAll() {
 		try {
 			list = repository.findAll();
@@ -85,16 +83,17 @@ public class EventoBean implements Serializable {
 			MessageUtil.errorMessage("Erro ao tentar listar os eventos.");
 		}
 	}
-	
+
 	public void delete() {
 		try {
 			repository.delete(selected);
 			list.remove(selected);
+			selected = new Evento();
 		} catch (RuntimeException r) {
 			MessageUtil.errorMessage("Erro ao tentar deletar.");
 		}
 	}
-	
+
 	public void onRowSelect(SelectEvent event) {
 		selected = (Evento) event.getObject();
 	}

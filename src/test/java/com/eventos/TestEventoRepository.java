@@ -6,6 +6,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.junit.Assert;
@@ -39,10 +40,10 @@ public class TestEventoRepository {
 	public void testSave() {
 
 		//test ok
-		 assertNotNull(repository.save(new Evento("evento teste", "local teste", "11:00", "10/05/2019")));
+		 assertNotNull(repository.save(new Evento("evento teste", "local teste", "10/04/2019", "11:00")));
 		 
 		 //test error
-		 assertNotNull(repository.save(new Evento(null, null, "11:00", "10/05/2019")));
+		 assertNotNull(repository.save(new Evento(null, null, "10/04/2019", "11:00")));
 	}
 	
 	@Test

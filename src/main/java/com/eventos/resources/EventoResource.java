@@ -49,61 +49,6 @@ public class EventoResource {
 		return evento;
 	}
 	
-	//receive format text
-	@PostMapping(path = "/addOrUpdateText")
-	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<Response<Evento>> addOrUpdateText(@RequestBody String evento) {
-		System.out.println("dado recebido: " + evento);
-		Response<Evento> response = new Response<>();
-		
-		if(evento.equals("")) {
-			response.getErrors().add("Event void");
-			return ResponseEntity.badRequest().body(response);
-		}
-		
-		JsonObject jsonObject = new JsonParser().parse(evento).getAsJsonObject();
-		Integer id = Integer.parseInt(jsonObject.get("id").toString());
-		String nome = replaceValue(jsonObject.get("nome").toString());
-		String local = replaceValue(jsonObject.get("local").toString());
-		String horario = replaceValue(jsonObject.get("horario").toString());
-		String data = replaceValue(jsonObject.get("data").toString());
-		Evento ev;
-
-		if(id != 0) {
-			
-			id = Integer.parseInt(jsonObject.get("id").toString());
-			ev = er.findEventById(id);
-			
-			if(!ev.equals(null)) {
-				ev.setNome(nome);
-				ev.setLocal(local);
-				ev.setHorario(horario);
-				ev.setData(data);
-				System.out.println("alterando: " + ev.toString());
-				if(!er.save(ev).equals(null)) {
-					response.setData(ev);
-					return ResponseEntity.ok(response);
-				}
-			}
-		}
-
-		else if (!isValid(nome) && !isValid(local) && !isValid(horario) && !isValid(data)) {
-			Evento e = new Evento();
-			e.setNome(nome);
-			e.setLocal(local);
-			e.setHorario(horario);
-			e.setData(data);
-			System.out.println("salvando: " + e.toString());
-			if(!er.save(e).equals(null)) {
-				response.setData(e);
-				return ResponseEntity.ok(response);
-			}
-		}
-		
-		response.getErrors().add("Error while trying to save");
-		return ResponseEntity.badRequest().body(response);
-	}
-	
 	@PostMapping(path = "/{id}")
 	public ResponseEntity<Response<Evento>> deleteById(@PathVariable("id") Integer id) {
 
@@ -130,14 +75,6 @@ public class EventoResource {
 		
 		response.getErrors().add("ID invalid");
 		return ResponseEntity.badRequest().body(response);
-	}
-
-	private boolean isValid(String valor) {
-		return (valor.isEmpty() || valor.trim().isEmpty());
-	}
-	
-	private String replaceValue(String value) {
-		return value.replace("\"", "");
 	}
 
 }

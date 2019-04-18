@@ -24,10 +24,10 @@ public class Evento {
 	private String local;
 	
 	@NotNull
-    private String data;
+	private String horario;
 	
 	@NotNull
-	private String horario;
+    private String data;
 
 	public Evento(String nome, String local, String data, String horario) {
 		this.nome = nome;
